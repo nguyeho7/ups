@@ -12,7 +12,7 @@ def auth_log(this_month):
     # defining the scope of the aplication
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     # credentials to google drive and sheet API
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('ups_anthill_inout_google_drive.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/github/ups_anthill/ups_modul/inout/ups_anthill_inout_google_drive.json', scope)
     # authentification
     gc = gspread.authorize(credentials)
     wks = gc.open(this_month).sheet1
@@ -37,7 +37,7 @@ def create_new_sheet(anthill, this_month, days):
     # defining the scope of the aplication
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     # credentials to google drive and sheet API
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('ups_anthill_inout_google_drive.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/github/ups_anthill/ups_modul/inout/ups_anthill_inout_google_drive.json', scope)
     # authentification
     gc = gspread.authorize(credentials)
     sh = gc.create(this_month)
