@@ -77,7 +77,7 @@ def worksheet_title(anthill, this_month, wks):
 
 def names_rows(anthill, wks):
     '''
-    names from the anthill list in rows
+    names in anthill_list is written in first column sorted alphabeticly
     '''
     names_list = [] 
     a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 1)
@@ -98,7 +98,7 @@ def header_days(days, wks):
 
 def header_calculation(days, wks):
     '''
-    header labels for calculation
+    labels for the columns in the SUM part of the worksheets
     '''
     calc_list = ["SUM hours", "wage", "wage - 1%", "tips ratio", "tips", "total"]
     a1_notion, a2_notion = a_notion(1, days+2, 1, days+len(calc_list)+1)
@@ -213,6 +213,7 @@ def try_this_month():
     try:
         wks = auth_log(this_month)
     except:
+        wks = auth_log(this_month)
         create_new_sheet(anthill, this_month, days, wks)
         update_worksheet(anthill, wks)
     return  wks, this_month, days
@@ -233,5 +234,3 @@ def update_worksheet(anthill, days, wks):
     SUM_total(anthill, days, wks)
     SUM_all(anthill, days, wks)
 
-wks, this_month, days = try_this_month()
-update_worksheet(anthill, days, wks)
