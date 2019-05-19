@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import *
+from inout_gsheet import try_this_month, update_worksheet, user_sheet_log
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
