@@ -34,6 +34,12 @@ def create_new_sheet(anthill, this_month, days):
     '''
     creating new sheet when there is no existing with current month name
     '''
+    # defining the scope of the aplication
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    # credentials to google drive and sheet API
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('ups_anthill_inout_google_drive.json', scope)
+    # authentification
+    gc = gspread.authorize(credentials)
     sh = gc.create(this_month)
     # sharing the new sheet with acc
     sh.share('anthillprague@gmail.com', perm_type='user', role='owner')
@@ -233,4 +239,3 @@ def update_worksheet(anthill, days, wks):
     SUM_tips(anthill, days, wks)
     SUM_total(anthill, days, wks)
     SUM_all(anthill, days, wks)
-
