@@ -171,5 +171,11 @@ def loop():
 # weird stuff
 if __name__ == "__main__":
     setup_inout()
-    check_new_users()
+    connected = False
+    while connected == False:
+        try:
+            check_new_users()
+            connected = True
+        except:
+            sleep(100)
     loop()
