@@ -30,7 +30,7 @@ def row_insert(order, wks):
     '''
     wks.insert_row([], order+2)
 
-def create_new_sheet(anthill, this_month, days, wks):
+def create_new_sheet(anthill, this_month, days):
     '''
     creating new sheet when there is no existing with current month name
     '''
@@ -41,6 +41,7 @@ def create_new_sheet(anthill, this_month, days, wks):
     resize_rows = anthill.num_of_ants + 2
     resize_cols = days + 7
     wks.resize(rows=resize_rows, cols=resize_cols)
+    return wks
 
 
 def number_of_days():
@@ -213,8 +214,7 @@ def try_this_month():
     try:
         wks = auth_log(this_month)
     except:
-        wks = auth_log(this_month)
-        create_new_sheet(anthill, this_month, days, wks)
+        wks = create_new_sheet(anthill, this_month, days)
         update_worksheet(anthill, wks)
     return  wks, this_month, days
 
