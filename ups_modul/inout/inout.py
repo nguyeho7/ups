@@ -87,8 +87,7 @@ def check_new_users():
     wks, this_month, days = try_this_month()
     delete_row(changes, wks)
     insert_row(changes, wks)
-    names_rows(wks)
-    update_worksheet(anthill, days, wks)
+    update_worksheet(anthill, anthill_name, this_month, days, wks)
 
 def get_next_card():
     '''
@@ -171,11 +170,13 @@ def loop():
 # weird stuff
 if __name__ == "__main__":
     setup_inout()
-    connected = False
-    while connected == False:
+    connected = "OFF"
+    while connected == "OFF":
         try:
             check_new_users()
-            connected = True
+            connected = "ON"
+
         except:
-            sleep(100)
+            time.sleep(100)
+        print(connected)
     loop()
