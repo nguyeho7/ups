@@ -175,7 +175,6 @@ if __name__ == "__main__":
         try:
             check_new_users()
             connected = "ON"
-
         except:
             time.sleep(100)
         print(connected)
