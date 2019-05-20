@@ -170,12 +170,12 @@ def loop():
 # weird stuff
 if __name__ == "__main__":
     setup_inout()
-    connected = "OFF"
-    while connected == "OFF":
+    connected = False
+    while connected == False:
         try:
             check_new_users()
-            connected = "ON"
+            connected = True
+            print("ANTHILL INOUT: ON")
         except:
             time.sleep(100)
-        print(connected)
     loop()
