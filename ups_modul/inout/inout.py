@@ -87,8 +87,7 @@ def check_new_users():
     wks, this_month, days = try_this_month()
     delete_row(changes, wks)
     insert_row(changes, wks)
-    names_rows(wks)
-    update_worksheet(anthill, days, wks)
+    update_worksheet(anthill, anthill_name, this_month, days, wks)
 
 def get_next_card():
     '''
@@ -176,6 +175,7 @@ if __name__ == "__main__":
         try:
             check_new_users()
             connected = True
+            print("ANTHILL INOUT: ON")
         except:
-            sleep(100)
+            time.sleep(100)
     loop()

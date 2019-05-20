@@ -79,7 +79,7 @@ def worksheet_title(anthill, this_month, wks):
     naming the cell (1,1) with curretnt month name and the worksheet tittle
     '''
     wks.update_cell(1,1, "{}".format((this_month.upper())))
-    wks.update_title("{}".format(this_month))
+    wks.update_title("_{}_".format(this_month))
     wks.update_cell(2+anthill.num_of_ants, 1, "hours/day")
 
 def names_rows(anthill, wks):
@@ -221,10 +221,10 @@ def try_this_month():
         wks = auth_log(this_month)
     except:
         wks = create_new_sheet(anthill, this_month, days)
-        update_worksheet(anthill, wks)
+        update_worksheet(anthill, anthill_name, this_month, days, wks)
     return  wks, this_month, days
 
-def update_worksheet(anthill, days, wks):
+def update_worksheet(anthill, anthill_name, this_month, days, wks):
     '''
     the fuction to update all the information in the worksheet
     '''
