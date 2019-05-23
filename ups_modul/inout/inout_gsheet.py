@@ -66,7 +66,7 @@ def a_notion(a1, a2, b1, b2):
     a2_notion = gspread.utils.rowcol_to_a1(b1, b2)
     return a1_notion, a2_notion
 
-def batch_cells(list_append,cell_list, wks):
+def batch_cells(appended_list, cell_list, wks):
     '''
     batch updating the cell with list of values
     '''
@@ -194,12 +194,19 @@ def SUM_all(anthill, days, wks):
     sum_all_list = []
     a1_notion, a2_notion = a_notion(anthill.num_of_ants+2, 2, anthill.num_of_ants+2, days+7)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
-    # print(cell_list)
     for x in range(1, days+7):
         b1_notion, b2_notion = a_notion(2, x+1, anthill.num_of_ants+1, x+1)
         sum_all_list.append("=SUM({}:{})".format(b1_notion, b2_notion))
     batch_cells(sum_all_list, cell_list, wks)
     wks.update_cell(2+anthill.num_of_ants, days+6, "0")
+
+def in_log_batch(in_list, wks):
+    '''
+    batch update of user who have status IN into "Anthill IN" sheet
+    '''
+    a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 3)
+    cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
+    batch_cells(in_list, cell_list, wks)
 
 def user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks):
     '''
