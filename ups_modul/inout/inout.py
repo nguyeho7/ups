@@ -137,7 +137,7 @@ def in_log(anthill_name):
     in_list = []
     # status_list =["name", "status", "time"]
     for keys, values in anthill_name.items():
-        if values.status == None:
+        if values.status == "IN":
             in_list.extend((values.name, values.status, values.time))
     wks = auth_log("Anthill IN")
     in_log_batch(in_list, wks)
