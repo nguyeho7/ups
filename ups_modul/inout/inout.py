@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import try_this_month, update_worksheet, user_sheet_log, in_log_batch
+from inout_gsheet import auth_log, try_this_month, update_worksheet, user_sheet_log, in_log_batch
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
@@ -135,11 +135,13 @@ def in_log(anthill_name):
     logging all user with IN status into google sheet "Anthill IN"
     '''
     in_list = []
-    # status_list =["name", "status", "time"]
+    time_format = "%H:%M"
     for keys, values in anthill_name.items():
         if values.status == "IN":
-            in_list.extend((values.name, values.status, values.time))
+            time_sheet = time.strftime(time_format, values.time)
+            in_list.extend((values.name, values.status, time_sheet))
     wks = auth_log("Anthill IN")
+    wks.clear()
     in_log_batch(in_list, wks)
 
 def log_txt(anthill_card, input_id):
@@ -189,6 +191,6 @@ if __name__ == "__main__":
             check_new_users()
             connected = True
         except:
-            time.sleep(100)
+            time.sleep(10)
     in_log(anthill_name)
     loop()
