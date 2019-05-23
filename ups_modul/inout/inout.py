@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import try_this_month, update_worksheet, user_sheet_log
+from inout_gsheet import try_this_month, update_worksheet, user_sheet_log, in_log_batch
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
@@ -130,6 +130,18 @@ def inout(anthill_card, anthill_name, input_id, t_delta, wks):
         user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks)
         anthill_card[input_id].status = 'OUT'
 
+def in_log(anthill_name):
+    '''
+    logging all user with IN status into google sheet "Anthill IN"
+    '''
+    in_list = []
+    # status_list =["name", "status", "time"]
+    for keys, values in anthill_name.items():
+        if values.status == None:
+            in_list.extend((values.name, values.status, values.time))
+    wks = auth_log("Anthill IN")
+    in_log_batch(in_list, wks)
+
 def log_txt(anthill_card, input_id):
     '''
     logging the user data to txt log
@@ -162,6 +174,7 @@ def loop():
             wks, this_month, days = try_this_month()
             t_delta = timer(anthill_card, input_id)
             inout(anthill_card, anthill_name, input_id, t_delta, wks)
+            in_log(anthill_name)
             log_txt(anthill_card, input_id)
             backup_list(anthill_list)
         else:
@@ -175,7 +188,7 @@ if __name__ == "__main__":
         try:
             check_new_users()
             connected = True
-            print("ANTHILL INOUT: ON")
         except:
             time.sleep(100)
+    in_log(anthill_name)
     loop()
