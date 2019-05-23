@@ -70,7 +70,7 @@ def batch_cells(appended_list, cell_list, wks):
     '''
     batch updating the cell with list of values
     '''
-    for i, val in enumerate(list_append):  #gives us a tuple of an index and value
+    for i, val in enumerate(appended_list):  #gives us a tuple of an index and value
         cell_list[i].value = val    #use the index on cell_list and the val from cell_values
     wks.update_cells(cell_list, value_input_option='USER_ENTERED')
 
