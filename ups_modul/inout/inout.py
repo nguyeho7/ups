@@ -88,7 +88,7 @@ def check_new_users():
     delete_row(changes, wks)
     insert_row(changes, wks)
     update_worksheet(anthill, anthill_name, this_month, days, wks)
-    update_worksheet_in(anthill, this_month, days)
+    update_worksheet_in(anthill, days)
 
 def get_next_card():
     '''
