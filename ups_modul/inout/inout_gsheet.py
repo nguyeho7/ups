@@ -104,6 +104,7 @@ def names_rows(anthill, wks):
     a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 1)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
     names_list = [key for key, values in sorted(anthill_name.items(), key=lambda x: x[1].row)]
+    batch_cells([], cell_list, wks)
     batch_cells(names_list, cell_list, wks)
 
 def header_days(days, wks):
@@ -115,6 +116,7 @@ def header_days(days, wks):
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
     for x in range(1, days+1):
         days_list.append(x)
+    batch_cells([], cell_list, wks)
     batch_cells(days_list, cell_list, wks)
 
 def header_calculation(days, wks):
@@ -124,6 +126,7 @@ def header_calculation(days, wks):
     calc_list = ["SUM hours", "wage", "wage - 1%", "tips ratio", "tips", "total"]
     a1_notion, a2_notion = a_notion(1, days+2, 1, days+len(calc_list)+1)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(calc_list, cell_list, wks)
 
 def SUM_day(anthill, days, wks):
@@ -136,6 +139,7 @@ def SUM_day(anthill, days, wks):
     for x in range(anthill.num_of_ants):
         b1_notion, b2_notion = a_notion(x+2, 2, x+2, days+1)
         sum_day_list.append("=SUM({}:{})".format(b1_notion, b2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_day_list, cell_list, wks)
 
 
@@ -150,6 +154,7 @@ def SUM_wage(anthill_name, days, wks):
     for key in sorted_keys:
         b1_notion, b2_notion = a_notion(anthill_name[key].row, days+2, 1, 1)
         sum_wage_list.append("=SUM({}*{})".format(b1_notion, anthill_name[key].pay))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_wage_list, cell_list, wks)
 
 
@@ -163,6 +168,7 @@ def SUM_wage99(anthill, days, wks):
     for x in range(anthill.num_of_ants):
         b1_notion, b2_notion = a_notion(x+2, days+3, 1, 1)
         sum_wage99_list.append("=0.99*ROUNDDOWN({};0)".format(b1_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_wage99_list, cell_list, wks)
 
 def SUM_tips_ratio(anthill, days, wks):
@@ -175,6 +181,7 @@ def SUM_tips_ratio(anthill, days, wks):
     for x in range(anthill.num_of_ants):
         b1_notion, b2_notion = a_notion(x+2, days+2, anthill.num_of_ants+2, days+2)
         sum_tips_ratio_list.append("={}/{}".format(b1_notion, b2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_tips_ratio_list, cell_list, wks)
 
 def SUM_tips(anthill, days, wks):
@@ -187,6 +194,7 @@ def SUM_tips(anthill, days, wks):
     for x in range(anthill.num_of_ants):
         b1_notion, b2_notion = a_notion(x+2, days+5, anthill.num_of_ants+2, days+6)
         sum_tips_list.append("=ROUNDDOWN({}*{};0)".format(b1_notion, b2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_tips_list, cell_list, wks)
 
 def SUM_total(anthill, days, wks):
@@ -199,6 +207,7 @@ def SUM_total(anthill, days, wks):
     for x in range(anthill.num_of_ants):
         b1_notion, b2_notion = a_notion(x+2, days+4, x+2, days+6)
         sum_total_list.append("=ROUNDDOWN({}+{};0)".format(b1_notion, b2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_total_list, cell_list, wks)
 
 def SUM_all(anthill, days, wks):
@@ -211,6 +220,7 @@ def SUM_all(anthill, days, wks):
     for x in range(1, days+7):
         b1_notion, b2_notion = a_notion(2, x+1, anthill.num_of_ants+1, x+1)
         sum_all_list.append("=SUM({}:{})".format(b1_notion, b2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(sum_all_list, cell_list, wks)
     wks.update_cell(2+anthill.num_of_ants, days+6, "0")
 
@@ -220,6 +230,7 @@ def in_log_batch(in_list, wks):
     '''
     a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 3)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
+    batch_cells([], cell_list, wks)
     batch_cells(in_list, cell_list, wks)
 
 def user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks):
@@ -277,7 +288,7 @@ def update_worksheet(anthill, anthill_name, this_month, days, wks):
     SUM_total(anthill, days, wks)
     SUM_all(anthill, days, wks)
 
-def update_worksheet_in(anthill, days):
+def update_worksheet_in(anthill, this_month, days):
     '''
     updating the header and names in IN sheet
     '''
