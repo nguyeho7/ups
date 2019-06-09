@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import auth_log, try_this_month, update_worksheet, user_sheet_log, in_log_batch
+from inout_gsheet import auth_log, try_this_month, update_worksheet, update_worksheet_in, user_sheet_log, wks_in_time_log, in_log_batch
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
@@ -88,6 +88,7 @@ def check_new_users():
     delete_row(changes, wks)
     insert_row(changes, wks)
     update_worksheet(anthill, anthill_name, this_month, days, wks)
+    update_worksheet_in(anthill, this_month, days)
 
 def get_next_card():
     '''
@@ -113,7 +114,7 @@ def timer(anthill_card, input_id):
     anthill_card[input_id].time = t_new
     return t_delta
 
-def inout(anthill_card, anthill_name, input_id, t_delta, wks):
+def inout(anthill_card, anthill_name, input_id, t_delta, this_month, wks):
     '''
     inout switch and logging
     '''
@@ -124,9 +125,9 @@ def inout(anthill_card, anthill_name, input_id, t_delta, wks):
         anthill_card[input_id].day_in = day.tm_mday
         day_in = anthill_card[input_id].day_in
         anthill_card[input_id].status = 'IN'
+        wks_in_time_log(anthill_name, this_month, day_in, user_name)
     elif anthill_card[input_id].status == 'IN':
         day_in = anthill_card[input_id].day_in
-        # clovek vubec nevi odkud se bere user_sheet_log, je potreba definovat ktere funkce se importuji
         user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks)
         anthill_card[input_id].status = 'OUT'
 
@@ -175,7 +176,7 @@ def loop():
         if input_id in anthill_card:
             wks, this_month, days = try_this_month()
             t_delta = timer(anthill_card, input_id)
-            inout(anthill_card, anthill_name, input_id, t_delta, wks)
+            inout(anthill_card, anthill_name, input_id, t_delta, this_month, wks)
             in_log(anthill_name)
             log_txt(anthill_card, input_id)
             backup_list(anthill_list)
