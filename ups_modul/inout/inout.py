@@ -88,7 +88,7 @@ def check_new_users():
     delete_row(changes, wks)
     insert_row(changes, wks)
     update_worksheet(anthill, anthill_name, this_month, days, wks)
-    update_worksheet_in(anthill, days)
+    update_worksheet_in(anthill, this_month, days)
 
 def get_next_card():
     '''
@@ -141,8 +141,8 @@ def in_log(anthill_name):
         if values.status == "IN":
             time_sheet = time.strftime(time_format, values.time)
             in_list.extend((values.name, values.status, time_sheet))
+    print(in_list)
     wks = auth_log("Anthill IN")
-    wks.clear()
     in_log_batch(in_list, wks)
 
 def log_txt(anthill_card, input_id):
