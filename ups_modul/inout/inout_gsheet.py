@@ -31,6 +31,19 @@ def auth_log_in_sheet(this_month):
     wks_in = gc.open(this_month).worksheet("_{} IN_".format(this_month))
     return wks_in
 
+def auth_log_out_sheet(this_month):
+    '''
+    authentification for all other action with worksheet, using scope, credentials, authentification
+    '''
+    # defining the scope of the aplication
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    # credentials to google drive and sheet API
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/github/ups_anthill/ups_modul/inout/ups_anthill_inout_google_drive.json', scope)
+    # authentification
+    gc = gspread.authorize(credentials)
+    wks_out = gc.open(this_month).worksheet("_{} OUT_".format(this_month))
+    return wks_out
+
 def row_delete(order, wks):
     '''
     delete row with order
@@ -58,6 +71,7 @@ def create_new_sheet(anthill, this_month, days):
     sh.share('anthillprague@gmail.com', perm_type='user', role='owner')
     wks = gc.open(this_month).sheet1
     wks.add_worksheet("_{} IN_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
+    wks.add_worksheet("_{} OUT_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
     resize_rows = anthill.num_of_ants + 2
     resize_cols = days + 7
     wks.resize(rows=resize_rows, cols=resize_cols)
@@ -230,7 +244,6 @@ def in_log_batch(in_list, wks):
     '''
     a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 3)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
-    batch_cells([], cell_list, wks)
     batch_cells(in_list, cell_list, wks)
 
 def user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks):
@@ -252,6 +265,14 @@ def user_in_time_sheet(anthill_name, day_in, user_name, wks):
     time_in = time.strftime(time_format, anthill_name[user_name].time)
     wks.update_cell(anthill_name[user_name].row, day_in+1, "{}".format(time_in))
 
+def user_out_time_sheet(anthill_name, day_in, user_name, wks):
+    '''
+    writing the time when the user identificate to the sheet
+    '''
+    time_format = "%H:%M"
+    time_out = time.strftime(time_format, anthill_name[user_name].time)
+    wks.update_cell(anthill_name[user_name].row, day_in+1, "{}".format(time_out))
+
 def try_this_month():
     # to do: move newly created spredsheet to ucetnictvi folder
     this_month = time.strftime("%b %Y", time.gmtime())
@@ -271,6 +292,13 @@ def wks_in_time_log(anthill_name, this_month, day_in, user_name):
     '''
     wks_in = auth_log_in_sheet(this_month)
     user_in_time_sheet(anthill_name, day_in, user_name, wks_in)
+
+def wks_out_time_log(anthill_name, this_month, day_in, user_name):
+    '''
+    grouping the authentification of sheet2 and writing the in time log
+    '''
+    wks_out = auth_log_out_sheet(this_month)
+    user_out_time_sheet(anthill_name, day_in, user_name, wks_out)
 
 def update_worksheet(anthill, anthill_name, this_month, days, wks):
     '''
@@ -295,3 +323,11 @@ def update_worksheet_in(anthill, this_month, days):
     wks_in = auth_log_in_sheet(this_month)
     names_rows(anthill, wks_in)
     header_days(days, wks_in)
+
+def update_worksheet_out(anthill, this_month, days):
+    '''
+    updating the header and names in IN sheet
+    '''
+    wks_out = auth_log_out_sheet(this_month)
+    names_rows(anthill, wks_out)
+    header_days(days, wks_out)
