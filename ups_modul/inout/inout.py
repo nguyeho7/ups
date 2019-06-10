@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import auth_log, try_this_month, update_worksheet, update_worksheet_in, user_sheet_log, wks_in_time_log, in_log_batch
+from inout_gsheet import auth_log, auth_log_in_sheet, auth_log_out_sheet, try_this_month, update_worksheet, update_worksheet_in, user_sheet_log, wks_in_time_log, wks_out_time_log, in_log_batch, row_insert, row_delete
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
@@ -61,21 +61,25 @@ def compare_lists(old_list, anthill_list):
     changes.sort(key = lambda change: change[1])
     return changes
 
-def delete_row(changes, wks):
+def delete_row(changes, wks, wks_in, wks_out):
     '''
     delete the old users rows
     '''
     for (x,y,z) in reversed(changes):
         if z == "removed":
             row_detele(y, wks)
+            row_detele(y, wks_in)
+            row_detele(y, wks_out)
 
-def insert_row(changes, wks):
+def insert_row(changes, wks, wks_in, wks_out):
     '''
     add new users rows
     '''
     for (x,y,z) in changes:
         if z == "added":
             row_insert(y, wks)
+            row_insert(y, wks_in)
+            row_insert(y, wks_out)
 
 def check_new_users():
     '''
@@ -85,8 +89,10 @@ def check_new_users():
     old_list = parse_backup_list()
     changes = compare_lists(old_list, anthill_list)
     wks, this_month, days = try_this_month()
-    delete_row(changes, wks)
-    insert_row(changes, wks)
+    wks_in = auth_log_in_sheet(this_month)
+    wks_out = auth_log_out_sheet(this_month)
+    delete_row(changes, wks, wks_in, wks_out)
+    insert_row(changes, wks, wks_in, wks_out)
     update_worksheet(anthill, anthill_name, this_month, days, wks)
     update_worksheet_in(anthill, this_month, days)
 
@@ -129,6 +135,7 @@ def inout(anthill_card, anthill_name, input_id, t_delta, this_month, wks):
     elif anthill_card[input_id].status == 'IN':
         day_in = anthill_card[input_id].day_in
         user_sheet_log(anthill_name, day_in, user_name, hours_delta, wks)
+        wks_out_time_log(anthill_name, this_month, day_in, user_name)
         anthill_card[input_id].status = 'OUT'
 
 def in_log(anthill_name):
@@ -141,8 +148,8 @@ def in_log(anthill_name):
         if values.status == "IN":
             time_sheet = time.strftime(time_format, values.time)
             in_list.extend((values.name, values.status, time_sheet))
-    print(in_list)
     wks = auth_log("Anthill IN")
+    wks.clear()
     in_log_batch(in_list, wks)
 
 def log_txt(anthill_card, input_id):
@@ -159,7 +166,7 @@ def log_txt(anthill_card, input_id):
 
 def backup_list(anthill_list):
     '''
-    write a list of current anthill empployyes after each ittereation with input ID
+    write a list of current anthill empployees after each ittereation with input ID
     '''
     f = open('/github/ups_anthill/ups_modul/inout/anthill_list.txt', "w")
     for x in range(len(anthill_list)):
