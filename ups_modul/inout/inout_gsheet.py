@@ -242,7 +242,7 @@ def in_log_batch(in_list, wks):
     '''
     batch update of user who have status IN into "Anthill IN" sheet
     '''
-    a1_notion, a2_notion = a_notion(2, 1, anthill.num_of_ants+1, 3)
+    a1_notion, a2_notion = a_notion(1, 1, anthill.num_of_ants+1, 3)
     cell_list = wks.range("{}:{}".format(a1_notion, a2_notion))
     batch_cells(in_list, cell_list, wks)
 
@@ -284,6 +284,7 @@ def try_this_month():
         wks = create_new_sheet(anthill, this_month, days)
         update_worksheet(anthill, anthill_name, this_month, days, wks)
         update_worksheet_in(anthill, this_month, days)
+        update_worksheet_out(anthill, this_month, days)
     return  wks, this_month, days
 
 def wks_in_time_log(anthill_name, this_month, day_in, user_name):
