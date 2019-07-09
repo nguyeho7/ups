@@ -1,5 +1,5 @@
 from anthill import anthill, anthill_card, anthill_name, anthill_list
-from inout_gsheet import auth_log, auth_log_in_sheet, auth_log_out_sheet, try_this_month, update_worksheet, update_worksheet_in, user_sheet_log, wks_in_time_log, wks_out_time_log, in_log_batch, row_insert, row_delete
+from inout_gsheet import auth_log, auth_log_in_sheet, auth_log_out_sheet, try_this_month, update_worksheet, update_worksheet_in, update_worksheet_out, user_sheet_log, wks_in_time_log, wks_out_time_log, in_log_batch, row_insert, row_delete
 import time
 from evdev import InputDevice, ecodes
 from multiprocessing import Process, Value
@@ -61,17 +61,17 @@ def compare_lists(old_list, anthill_list):
     changes.sort(key = lambda change: change[1])
     return changes
 
-def delete_row(changes, wks, wks_in, wks_out):
+def delete_row_sheet(changes, wks, wks_in, wks_out):
     '''
     delete the old users rows
     '''
     for (x,y,z) in reversed(changes):
         if z == "removed":
-            row_detele(y, wks)
-            row_detele(y, wks_in)
-            row_detele(y, wks_out)
+            row_delete(y, wks)
+            row_delete(y, wks_in)
+            row_delete(y, wks_out)
 
-def insert_row(changes, wks, wks_in, wks_out):
+def insert_row_sheet(changes, wks, wks_in, wks_out):
     '''
     add new users rows
     '''
@@ -91,10 +91,11 @@ def check_new_users():
     wks, this_month, days = try_this_month()
     wks_in = auth_log_in_sheet(this_month)
     wks_out = auth_log_out_sheet(this_month)
-    delete_row(changes, wks, wks_in, wks_out)
-    insert_row(changes, wks, wks_in, wks_out)
+    delete_row_sheet(changes, wks, wks_in, wks_out)
+    insert_row_sheet(changes, wks, wks_in, wks_out)
     update_worksheet(anthill, anthill_name, this_month, days, wks)
     update_worksheet_in(anthill, this_month, days)
+    update_worksheet_out(anthill, this_month, days)
 
 def get_next_card():
     '''
