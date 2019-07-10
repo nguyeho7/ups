@@ -15,7 +15,7 @@ def auth_log(this_month):
     credentials = ServiceAccountCredentials.from_json_keyfile_name('/github/ups_anthill/ups_modul/inout/ups_anthill_inout_google_drive.json', scope)
     # authentification
     gc = gspread.authorize(credentials)
-    wks = gc.open(this_month).sheet1
+    wks = gc.open(this_month).worksheet("_{}_".format(this_month))
     return wks
 
 def auth_log_in_sheet(this_month):
@@ -69,11 +69,12 @@ def create_new_sheet(anthill, this_month, days):
     sh = gc.create(this_month)
     # sharing the new sheet with acc
     sh.share('anthillprague@gmail.com', perm_type='user', role='owner')
-    wks = gc.open(this_month).sheet1
-    wks.add_worksheet("_{} IN_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
-    wks.add_worksheet("_{} OUT_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
+    wks_spread = gc.open(this_month)
+    wks_spread.add_worksheet("_{} IN_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
+    wks_spread.add_worksheet("_{} OUT_".format(this_month), rows="{}".format(anthill.num_of_ants + 1), cols="{}".format(days + 1))
     resize_rows = anthill.num_of_ants + 2
     resize_cols = days + 7
+    wks = gc.open(this_month).sheet1
     wks.resize(rows=resize_rows, cols=resize_cols)
     return wks
 
