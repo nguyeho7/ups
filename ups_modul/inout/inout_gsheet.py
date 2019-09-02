@@ -284,7 +284,9 @@ def try_this_month():
     except:
         wks = create_new_sheet(anthill, this_month, days)
         update_worksheet(anthill, anthill_name, this_month, days, wks)
+        time.sleep(10)
         update_worksheet_in(anthill, this_month, days)
+        time.sleep(10)
         update_worksheet_out(anthill, this_month, days)
     return  wks, this_month, days
 
